@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+class dbConstructor {
+    constructor() {
+        const encrypted = new FileSync('db/encrypted.json');
+        const shared = new FileSync('db/shared.json');
+        this.shared = low(shared);
+        this.encrypted = low(encrypted);
+    }
+}
+let db = new dbConstructor();
+db.encrypted.defaults({ type: "encrypted", posts: [] });
+db.shared.defaults({ type: "shared", users: [], posts: [] });
+
+setInterval(() => {
+    console.log("+ Writing DataBases");
+    db.encrypted.write();
+    db.shared.write();
+}, 150);
